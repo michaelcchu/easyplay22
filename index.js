@@ -9,6 +9,50 @@ const reader = new FileReader();
 let activePress; let chords = []; let index; let midi; let notes; 
 let on = false; let press; let ticks = []; let tuning;
 
+let noteWidth; let minDistance;
+
+const myGameArea = {
+  canvas: document.getElementById("canvas"),
+  start: function() {
+    this.context = this.canvas.getContext("2d");
+    this.context.globalAlpha = 0.5;
+  },
+  clear: function() {
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+function startGame() {
+  myGameArea.start();
+}
+
+function updateGameArea() {
+  myGameArea.clear();
+
+  // loop through chords
+  const time = chords[index][0].ticks;
+  const ctx = myGameArea.context;
+  ctx.fillStyle = "blue";
+
+  let i = index;
+  
+  while ((i < chords.length) && 
+    (chords[i][0].ticks - time < myGameArea.canvas.width)) {
+    // draw game piece
+    ctx.fillRect(chords[i][0].ticks - time, 0, noteWidth, 
+      myGameArea.canvas.height);
+  
+    // increment i
+    i++;
+  }
+
+  // draw pointer
+  ctx.fillStyle = "red";
+  ctx.fillRect(0, 0, noteWidth, myGameArea.canvas.height);
+}
+
+startGame();
+
 function byId(id) {return document.getElementById(id);};
 
 function setChord(i, gain) {
@@ -146,6 +190,19 @@ function setup(arrayBuffer) {
     }
   }
   chords = getChords(notes);
+
+  // calculate the minimum distance
+  minDistance = 10000;
+  for (let i = 1; i < chords.length; i++) {
+    const distance = chords[i][0].ticks - chords[i-1][0].ticks;
+    if (distance < minDistance) {
+      minDistance = distance;
+    }
+  }
+
+  myGameArea.canvas.width = minDistance * 40;
+  noteWidth = minDistance;
+  
   resetVars();
 }
 
