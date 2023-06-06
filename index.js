@@ -91,6 +91,7 @@ function key(e) {
           setChord(index-1, 0); // turn the old oscillators off
         }
         setChord(index, normalGain); // turn the new oscillators on
+        updateGameArea();
         activePress = press; index++;
     }
   }
@@ -108,7 +109,7 @@ function key(e) {
 }
 
 function resetVars() {
-    activePress = null; index = 0; 
+    activePress = null; index = 0; updateGameArea();
     for (let gainNode of gainNodes) {gainNode.gain.value = 0;}
 }
 
