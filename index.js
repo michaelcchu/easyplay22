@@ -34,8 +34,10 @@ function updateGameArea() {
   const ctx = myGameArea.context;
   ctx.fillStyle = "blue";
 
+  // starts by drawing the current chord (index i)
+  // then continues to draw chords (as tick-marks on the page)
+  // until reaching the end of the canvas
   let i = index;
-  
   while ((i < chords.length) && 
     (chords[i][0].ticks - time < myGameArea.canvas.width)) {
     // draw game piece
